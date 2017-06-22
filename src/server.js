@@ -11,7 +11,7 @@ import path from 'path';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import expressJwt from 'express-jwt';
+import expressJwt, { UnauthorizedError as Jwt401Error } from 'express-jwt';
 import expressGraphQL from 'express-graphql';
 import jwt from 'jsonwebtoken';
 import React from 'react';
@@ -21,12 +21,14 @@ import App from './components/App';
 import Html from './components/Html';
 import { ErrorPageWithoutStyle } from './routes/error/ErrorPage';
 import errorPageStyle from './routes/error/ErrorPage.css';
-import passport from './core/passport';
-import router from './core/router';
+import createFetch from './createFetch';
+import passport from './passport';
+import router from './router';
 import models from './data/models';
 import schema from './data/schema';
 import assets from './assets.json'; // eslint-disable-line import/no-unresolved
-import { port, auth } from './config';
+import config from './config';
+
 
 const app = express();
 
@@ -49,10 +51,20 @@ app.use(bodyParser.json());
 // Authentication
 // -----------------------------------------------------------------------------
 app.use(expressJwt({
-  secret: auth.jwt.secret,
+  secret: config.auth.jwt.secret,
   credentialsRequired: false,
   getToken: req => req.cookies.id_token,
 }));
+// Error handler for express-jwt
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+  if (err instanceof Jwt401Error) {
+    console.error('[express-jwt-error]', req.cookies.id_token);
+    // `clearCookie`, otherwise user can't use web-app until cookie expires
+    res.clearCookie('id_token');
+  }
+  next(err);
+});
+
 app.use(passport.initialize());
 
 if (__DEV__) {
@@ -65,7 +77,7 @@ app.get('/login/facebook/return',
   passport.authenticate('facebook', { failureRedirect: '/login', session: false }),
   (req, res) => {
     const expiresIn = 60 * 60 * 24 * 180; // 180 days
-    const token = jwt.sign(req.user, auth.jwt.secret, { expiresIn });
+    const token = jwt.sign(req.user, config.auth.jwt.secret, { expiresIn });
     res.cookie('id_token', token, { maxAge: 1000 * expiresIn, httpOnly: true });
     res.redirect('/');
   },
@@ -97,9 +109,15 @@ app.get('*', async (req, res, next) => {
         // eslint-disable-next-line no-underscore-dangle
         styles.forEach(style => css.add(style._getCss()));
       },
+      // Universal HTTP client
+      fetch: createFetch({
+        baseUrl: config.api.serverUrl,
+        cookie: req.headers.cookie,
+      }),
     };
 
     const route = await router.resolve({
+      ...context,
       path: req.path,
       query: req.query,
     });
@@ -121,6 +139,9 @@ app.get('*', async (req, res, next) => {
     if (assets[route.chunk]) {
       data.scripts.push(assets[route.chunk].js);
     }
+    data.app = {
+      apiUrl: config.api.clientUrl,
+    };
 
     const html = ReactDOM.renderToStaticMarkup(<Html {...data} />);
     res.status(route.status || 200);
@@ -138,7 +159,7 @@ pe.skipNodeFiles();
 pe.skipPackage('express');
 
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-  console.log(pe.render(err)); // eslint-disable-line no-console
+  console.error(pe.render(err));
   const html = ReactDOM.renderToStaticMarkup(
     <Html
       title="Internal Server Error"
@@ -155,10 +176,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 //
 // Launch the server
 // -----------------------------------------------------------------------------
-/* eslint-disable no-console */
 models.sync().catch(err => console.error(err.stack)).then(() => {
-  app.listen(port, () => {
-    console.log(`The server is running at http://localhost:${port}/`);
+  app.listen(config.port, () => {
+    console.info(`The server is running at http://localhost:${config.port}/`);
   });
 });
-/* eslint-enable no-console */

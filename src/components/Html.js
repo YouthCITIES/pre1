@@ -9,7 +9,10 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { analytics } from '../config';
+import serialize from 'serialize-javascript';
+import config from '../config';
+
+/* eslint-disable react/no-danger */
 
 class Html extends React.Component {
   static propTypes = {
@@ -20,6 +23,7 @@ class Html extends React.Component {
       cssText: PropTypes.string.isRequired,
     }).isRequired),
     scripts: PropTypes.arrayOf(PropTypes.string.isRequired),
+    app: PropTypes.object, // eslint-disable-line
     children: PropTypes.string.isRequired,
   };
 
@@ -29,7 +33,7 @@ class Html extends React.Component {
   };
 
   render() {
-    const { title, description, styles, scripts, children } = this.props;
+    const { title, description, styles, scripts, app, children } = this.props;
     return (
       <html className="no-js" lang="en">
         <head>
@@ -39,31 +43,26 @@ class Html extends React.Component {
           <meta name="description" content={description} />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-          {styles.map(style =>
+          {styles.map(style => (
             <style
               key={style.id}
               id={style.id}
-              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: style.cssText }}
-            />,
-          )}
+            />
+          ))}
         </head>
         <body>
-          <div
-            id="app"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: children }}
-          />
+          <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
+          <script dangerouslySetInnerHTML={{ __html: `window.App=${serialize(app)}` }} />
           {scripts.map(script => <script key={script} src={script} />)}
-          {analytics.google.trackingId &&
+          {config.analytics.googleTrackingId &&
             <script
-              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html:
               'window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;' +
-              `ga('create','${analytics.google.trackingId}','auto');ga('send','pageview')` }}
+              `ga('create','${config.analytics.googleTrackingId}','auto');ga('send','pageview')` }}
             />
           }
-          {analytics.google.trackingId &&
+          {config.analytics.googleTrackingId &&
             <script src="https://www.google-analytics.com/analytics.js" async defer />
           }
         </body>

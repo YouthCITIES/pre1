@@ -7,13 +7,7 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-import Sequelize from 'sequelize';
-import config from '../config';
+import Router from 'universal-router';
+import routes from './routes';
 
-const sequelize = new Sequelize(config.databaseUrl, {
-  define: {
-    freezeTableName: true,
-  },
-});
-
-export default sequelize;
+export default new Router(routes);

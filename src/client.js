@@ -9,13 +9,15 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ErrorReporter from 'redbox-react';
+import deepForceUpdate from 'react-deep-force-update';
 import FastClick from 'fastclick';
 import queryString from 'query-string';
 import { createPath } from 'history/PathUtils';
-import history from './core/history';
 import App from './components/App';
-import { updateMeta } from './core/DOMUtils';
-import { ErrorReporter, deepForceUpdate } from './core/devUtils';
+import createFetch from './createFetch';
+import history from './history';
+import { updateMeta } from './DOMUtils';
 
 /* eslint-disable global-require */
 
@@ -29,6 +31,10 @@ const context = {
     const removeCss = styles.map(x => x._insertCss());
     return () => { removeCss.forEach(f => f()); };
   },
+  // Universal HTTP client
+  fetch: createFetch({
+    baseUrl: window.App.apiUrl,
+  }),
 };
 
 // Switch off the native scroll restoration behavior and handle it manually
@@ -87,7 +93,7 @@ FastClick.attach(document.body);
 const container = document.getElementById('app');
 let appInstance;
 let currentLocation = history.location;
-let router = require('./core/router').default;
+let router = require('./router').default;
 
 // Re-render the app when window.location changes
 async function onLocationChange(location, action) {
@@ -107,6 +113,7 @@ async function onLocationChange(location, action) {
     // it finds the first route that matches provided URL path string
     // and whose action method returns anything other than `undefined`.
     const route = await router.resolve({
+      ...context,
       path: location.pathname,
       query: queryString.parse(location.search),
     });
@@ -135,7 +142,7 @@ async function onLocationChange(location, action) {
       throw error;
     }
 
-    console.error(error); // eslint-disable-line no-console
+    console.error(error);
 
     // Do a full page reload if error occurs during client-side navigation
     if (action && currentLocation.key === location.key) {
@@ -161,8 +168,8 @@ if (__DEV__) {
 
 // Enable Hot Module Replacement (HMR)
 if (module.hot) {
-  module.hot.accept('./core/router', () => {
-    router = require('./core/router').default;
+  module.hot.accept('./router', () => {
+    router = require('./router').default;
 
     if (appInstance) {
       try {

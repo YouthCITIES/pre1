@@ -10,18 +10,17 @@
 import React from 'react';
 import Layout from '../../components/Layout';
 import Page from '../../components/Page';
-import Explore from './explore';
+import Projects from './Projects';
 
 export default {
 
-  path: '/explore',
+  path: '/projects',
 
   async action() {
-
     return {
-      title: 'Explore',
-      chunk: 'explore',
-      component:<Explore />,
+      title: 'Projects',
+      chunk: 'projects',
+      component: <Projects />,
     };
   },
 

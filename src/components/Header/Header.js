@@ -8,44 +8,40 @@
  */
 
 import React from 'react';
+import AppBar from 'material-ui/AppBar';
+import IconMenu from 'material-ui/IconMenu';
+import Drawer from 'material-ui/Drawer';
+
+import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import s from './Header.css';
 import Link from '../Link';
 import Navigation from '../Navigation';
 import logoUrl from './logo-small.png';
 import logoUrl2x from './logo-small@2x.png';
-import {Navbar, FormGroup, FormControl, Button} from 'react-bootstrap/lib/'
 
 class Header extends React.Component {
   render() {
     return (
-      <div>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-      <link rel="stylesheet" type="text/css" href="./Header.css" />
-      
-      <div className={s.root}>
-        <div className={s.container}>
-          <div className={s.banner}>
-            
-             <div className='row'>
-             <span> <h1 className={s.bannerTitle}>PRE</h1></span>
-             <span><Button className=" createnew btn btn-primary pull-right" bsStyle="primary">Create New</Button></span>
-             
-             </div>
-              <br style={{marginBottom:20}}/>
-
-          </div>
-          <div className={s.container} role="navigation">
-          <Navigation />
-        </div>
-           
-        </div>
+      <div >
+        <AppBar
+          title="PRE Prototype Project Tracker"
+          iconElementRight={
+            <IconMenu
+              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+              targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+            >
+              <MenuItem primaryText="Create New" />
+              <MenuItem primaryText="My Account" />              
+              <MenuItem primaryText="Help" />
+              <MenuItem primaryText="Sign out" />
+            </IconMenu>
+          }
+        />
       </div>
-      
-      
-
-      
-</div>
     );
   }
 }

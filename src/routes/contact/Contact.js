@@ -8,22 +8,25 @@
  */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Feedback.css';
+import s from './Contact.css';
 
-class Feedback extends React.Component {
+class Contact extends React.Component {
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+  };
+
   render() {
     return (
       <div className={s.root}>
         <div className={s.container}>
-          <a
-            className={s.link}
-            href="#"
-          >Ask a question</a>
+          <h1>{this.props.title}</h1>
+          <p>...</p>
         </div>
       </div>
     );
   }
 }
 
-export default withStyles(s)(Feedback);
+export default withStyles(s)(Contact);

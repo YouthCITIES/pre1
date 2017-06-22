@@ -20,24 +20,14 @@
   max-width: var(--max-content-width);
 }
 
-.sidebar{
-  padding: 50px 50px;
-}
-
 .newsItem {
   margin: 0 0 2rem;
 }
 
-.centerText{
-  text-align: center;
-}
 .newsTitle {
   font-size: 1.5rem;
 }
 
-.spacer{
-  padding: 20px;
-}
 .newsDesc {
   h1,
   h2,

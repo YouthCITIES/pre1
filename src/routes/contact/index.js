@@ -9,19 +9,18 @@
 
 import React from 'react';
 import Layout from '../../components/Layout';
-import Page from '../../components/Page';
-import Explore from './explore';
+import Contact from './Contact';
+
+const title = 'Contact Us';
 
 export default {
 
-  path: '/explore',
+  path: '/contact',
 
-  async action() {
-
+  action() {
     return {
-      title: 'Explore',
-      chunk: 'explore',
-      component:<Explore />,
+      title,
+      component: <Layout><Contact title={title} /></Layout>,
     };
   },
 

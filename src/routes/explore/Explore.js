@@ -8,45 +8,58 @@
  */
 
 import React from 'react';
+//import { Grid, Row, Col } from 'react-flexbox-grid';
 import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
-import s from './Explore.css';
-import RequestCard from '../../components/RequestCard'
+import {Grid, Col, Row} from 'react-styled-flexboxgrid';
+import ProjectCard from '../../components/ProjectCard/ProjectCard';
+import Layout from '../../components/Layout';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+
 
 class Explore extends React.Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
+    news: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      link: PropTypes.string.isRequired,
+      content: PropTypes.string,
+    })).isRequired,
   };
 
   render() {
     return (
-      <div className={s.root}>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-        <div className={s.container}>
-          <h1>Explore</h1>
-          <div className="row">
-            <div className= "col-xs-6 col-sm-6 col-md-4 "  >
-              <RequestCard/>
-            </div>
-            <div className= "col-xs-6 col-sm-6 col-md-4 "  >
-              <RequestCard/>
-            </div>
-            <div className= "col-xs-6 col-sm-6 col-md-4 "  >
-              <RequestCard/>
-            </div>
-            <div className= "col-xs-6 col-sm-6 col-md-4 "  >
-              <RequestCard/>
-            </div>
-            <div className= "col-xs-6 col-sm-6 col-md-4 "  >
-              <RequestCard/>
-            </div>
-            
-            
+      <Layout>
+        <div>
+          <div>
+
+            <Row>
+              <h2> Suggested </h2>
+            </Row>
+            <Row>
+              <DropDownMenu value={1} >
+                <MenuItem value={1} primaryText="Prototypes" />
+                <MenuItem value={2} primaryText="Projects" />
+                <MenuItem value={3} primaryText="People" />
+              </DropDownMenu>
+            </Row>
+            <Row>
+              <Col md={5}>
+                <ProjectCard preview />
+                  <p />
+                <ProjectCard preview />
+              </Col>
+              <Col md={5}>
+                <ProjectCard preview />
+                  <p />
+                <ProjectCard preview />
+              </Col>
+            </Row>
           </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 }
 
-export default withStyles(s)(Explore);
+export default Explore;

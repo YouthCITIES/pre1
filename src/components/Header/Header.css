@@ -14,14 +14,13 @@
 }
 
 .root {
-  background: #282725;
+  background: #373277;
   color: #fff;
-  
 }
 
 .container {
   margin: 0 auto;
-  padding: 0px 0;
+  padding: 20px 0;
   max-width: var(--max-content-width);
 }
 
@@ -36,17 +35,14 @@
 }
 
 .banner {
-  text-align: left;
-  padding-left: 30px;
-  padding-top: 10px
+  text-align: center;
 }
 
 .bannerTitle {
-  text-align: center;
   margin: 0;
   padding: 10px;
   font-weight: normal;
-  font-size: 3em;
+  font-size: 4em;
   line-height: 1em;
 }
 
@@ -55,10 +51,4 @@
   color: rgba(255, 255, 255, 0.5);
   font-size: 1.25em;
   margin: 0;
-}
-
-.createnew {
-  height: 100px;
-  width: 700px;
-
 }

@@ -13,9 +13,9 @@ import PropTypes from 'prop-types';
 import withStyles from 'isomorphic-style-loader/lib/withStyles';
 import {Grid, Col, Row} from 'react-styled-flexboxgrid';
 import ProjectCard from '../../components/ProjectCard/ProjectCard';
-import s from './Home.css';
+import Layout from '../../components/Layout';
 
-class Home extends React.Component {
+class Projects extends React.Component {
   static propTypes = {
     news: PropTypes.arrayOf(PropTypes.shape({
       title: PropTypes.string.isRequired,
@@ -26,28 +26,9 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div >
-        <div >
-          <Row>
-            <Col md={3}>
-                <h2> Suggested </h2>
-              <ProjectCard preview />
-            </Col>
-            <Col md={1} />
-            <Col md={6}>
-                <h1> In Progress </h1>
-              <ProjectCard />
-              <p />
-              <ProjectCard />
-              <p />
-              <ProjectCard />
-            </Col>
-            <Col md={1} />
-          </Row>
-        </div>
-      </div>
+      <Layout> Projects </Layout>
     );
   }
 }
 
-export default withStyles(s)(Home);
+export default Projects;
